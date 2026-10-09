@@ -1,0 +1,8 @@
+doc_id,title,issuer,authority_level,doc_type,version,effective_from,effective_to,supersedes,scope_programme,scope_batches,provenance,retrieved_on,synthetic
+ACAD-REG-2023,Academic Regulations for B.Tech (Synthetic Demo),Office of Dean (Academics),1,regulation,2.0,2023-07-01,2024-06-30,,ALL,2023+,https://example.edu/synthetic,2026-10-08,Y
+ACAD-REG-2024,Academic Regulations for B.Tech (Synthetic Demo),Office of Dean (Academics),1,regulation,3.1,2024-07-01,,ACAD-REG-2023#7.2,ALL,2023+,https://example.edu/synthetic,2026-10-08,Y
+EXAM-RULES-2024,Examination and Supplementary Rules (Synthetic Demo),Controller of Examinations,1,regulation,1.0,2024-07-01,,,ALL,2023+,https://example.edu/synthetic,2026-10-08,Y
+ATT-CIRCULAR-2024,Attendance Circular (Synthetic Demo),Academic Office,2,circular,1.0,2024-08-01,,,ALL,2023+,https://example.edu/synthetic,2026-10-08,Y
+CSE-NOTICE-2024,CSE Department Notice (Synthetic Demo),CSE Department,3,notice,1.0,2024-07-01,,,BTECH_CSE,2024+,https://example.edu/synthetic,2026-10-08,Y
+DEMO-PLACEMENT-POLICY-2026,Demo Placement Policy 2026,Training and Placement Office,2,policy,1.0,2026-07-01,,,ALL,,Local demo.txt test document,2026-10-08,Y
+PLACEMENT-POLICY-2026-27,Placement Policy 2026-27,Training and Placement Office,2,policy,1.0,2026-07-01,,,ALL,,Local demo.txt test document,2026-10-08,Y
