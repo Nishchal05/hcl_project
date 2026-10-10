@@ -2,7 +2,7 @@
 import hashlib,re
 from chromadb import PersistentClient
 from .config import CHROMA_PATH, EMBEDDING_MODEL, TOP_K, MOCK_LLM
-
+//Rag Pipeline
 class Embeddings:
  """Configured local model; deterministic hashing fallback preserves offline mock mode."""
  def __init__(self): self.model=None; self.mode='hashing-fallback'
