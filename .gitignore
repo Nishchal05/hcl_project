@@ -10,3 +10,5 @@ evaluation/results/*.json
 .env
 
 data/real_documents/
+
+tmp/

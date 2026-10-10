@@ -4,7 +4,7 @@ from .schemas import AskRequest,AskResponse,IngestResponse
 from .seed import seed
 from .db import conn
 from .graph import graph
-from .config import OLLAMA_BASE_URL,OLLAMA_MODEL,MOCK_LLM,EMBEDDING_MODEL,MAX_UPLOAD_MB
+from .config import OLLAMA_BASE_URL,OLLAMA_MODEL,MOCK_LLM,EMBEDDING_MODEL,MAX_UPLOAD_MB,DEMO_MODE
 from .tools import profile
 from .rag import index_document,remove_document,rebuild,chunks,embeddings
 from .llm import explain
@@ -49,6 +49,11 @@ def reindex():
 @app.get('/rules')
 def rules():
  with conn() as c:return [dict(r) for r in c.execute('SELECT * FROM rule_registry')]
+@app.get('/demo/students')
+def demo_students():
+ """Demo-only selector data: IDs only, never personal student records."""
+ if not DEMO_MODE: raise HTTPException(404,'Demo mode is disabled.')
+ with conn() as c:return [{'student_id':r['student_id']} for r in c.execute('SELECT student_id FROM students ORDER BY student_id')]
 @app.get('/student/{student_id}')
 def student(student_id:str,x_student_id:str|None=Header(default=None)):
  require_student(x_student_id)

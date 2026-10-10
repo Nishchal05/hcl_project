@@ -5,6 +5,8 @@ from app.db import conn
 from app.main import ask, student
 from app.graph import graph
 from app.rag import index_document,search,remove_document
+from app.rag import sections
+from app.retrieval import retrieve
 from app.schemas import AskRequest
 from fastapi import HTTPException
 from datetime import date
@@ -41,3 +43,11 @@ def test_new_document_is_retrievable_without_code_changes():
     try:
         assert any(x['doc_id']==doc_id for x in search('Who is the library coordinator?',5))
     finally: remove_document(doc_id)
+def test_section_parser_does_not_bleed_between_numbered_sections():
+    text='EXPERIMENT 1\nFirst experiment evidence.\nEXPERIMENT 2\nSecond experiment evidence.'
+    parsed=dict(sections(text))
+    assert parsed['EXPERIMENT 1']=='First experiment evidence.'
+    assert 'Second experiment' not in parsed['EXPERIMENT 1']
+def test_topic_title_outweighs_unrelated_vector_candidate():
+    results=retrieve('what is placement policy')
+    assert results and results[0]['doc_id']=='DEMO-PLACEMENT-POLICY-2026'

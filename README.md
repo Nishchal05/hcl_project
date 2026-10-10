@@ -96,6 +96,8 @@ PDF, TXT, and Markdown uploads are accepted. PDF text is extracted using `pypdf`
 
 Uploads default to a 20 MB ceiling (`MAX_UPLOAD_MB`), configurable in `.env`; restart the backend after changing it.
 
+Documents with headings such as `EXPERIMENT 1`, `SECTION 7`, `CHAPTER 2`, `MODULE 3`, or `UNIT 4` are parsed into section-aware chunks. A matching exact-section question retrieves that heading-delimited section rather than an adjacent fixed-size chunk. After upgrading chunking or embeddings, call `POST /reindex` to rebuild the existing corpus.
+
 ## Enhanced RAG and demo mode
 
 The active pipeline is now `upload → PDF/TXT/Markdown extraction → 800-character overlapping chunks → configurable local embeddings → persistent ChromaDB → source precedence → LangGraph → validated response/audit`. Set `EMBEDDING_MODEL=all-MiniLM-L6-v2` for the preferred Sentence Transformers model. `MOCK_LLM=true` is the reproducible default: it retains the same graph/RAG/tools/audit workflow without requiring Ollama. Ollama connection state is exposed in health for a later production explanation adapter; the current answer renderer remains deterministic and evidence-grounded.

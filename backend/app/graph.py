@@ -1,7 +1,7 @@
 """One LangGraph. Router only returns validated intent/entities; answers use verified evidence."""
 from typing import TypedDict
 from langgraph.graph import StateGraph,START,END
-from .retrieval import retrieve,citation
+from .retrieval import retrieve,exact_section,citation
 from .policy.source_precedence import resolve
 from .tools import attendance,eligibility
 from .schemas import Route
@@ -16,12 +16,12 @@ def router(s):
  elif 'eligible' in q or 'can i appear' in q or 'i failed' in q:i='personal_eligibility'
  elif len(q.strip())<8:i='clarification_needed'
  elif any(x in q for x in ('scholarship','antarctica','mars')):i='not_answerable'
- elif re.match(r'\s*(who|when)\b',q) or any(x in q for x in ('minimum attendance','placement cutoff','last date')):i='exact_fact'
+ elif re.search(r'\b(experiment|section|chapter|module|unit)\s+[\divxlcdm]+\b',q) or re.match(r'\s*(who|when)\b',q) or any(x in q for x in ('minimum attendance','placement cutoff','last date')):i='exact_fact'
  elif 'how' in q or 'procedure' in q or 'apply' in q:i='procedure'
  else:i='policy_fact'
  r=Route(intent=i,entities=e);return {**s,'qtype':r.intent,'entities':r.entities}
 def retrieve_node(s):
- raw=retrieve(s['question']); grouped={}
+ raw=exact_section(s['question']) or retrieve(s['question']); grouped={}
  for hit in raw:
   if hit['doc_id'] not in grouped: grouped[hit['doc_id']]={**hit,'text':hit['text']}
   elif hit['text'] not in grouped[hit['doc_id']]['text']: grouped[hit['doc_id']]['text']+='\n'+hit['text']
@@ -60,6 +60,11 @@ def answer(s):
  if not s.get('selected'):return {**s,'answer':'I could not find this information in authoritative university sources.','answer_type':'not_found','explanation':'No applicable evidence was retrieved.'}
  # Exact-fact extraction is deliberately narrow: one evidence sentence, never a policy summary.
  if typ=='exact_fact':
+  # A named section (for example, “Experiment 1”) is returned as that complete
+  # heading-delimited section, never a neighbouring vector chunk.
+  if s['selected'] and s['selected'][0].get('section'):
+   d=s['selected'][0]
+   return {**s,'citations':[citation(d)],'answer':d['text'][:4000],'answer_type':'retrieved_fact','explanation':'Exact section extraction from heading-delimited source text.'}
   facts=[]
   for d in s['selected']:
    for sentence in re.split(r'(?<!Dr\.)(?<=[.!?])\s+',d['text']):
